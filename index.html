@@ -151,6 +151,14 @@ section{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;al
 .env span{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);color:#fff;font-size:1.6rem}
 .paper{max-width:560px;background:var(--cream);padding:3rem;font-style:italic;font-size:1.7rem;line-height:1.8;color:var(--wine);box-shadow:0 20px 30px -18px rgba(0,0,0,.3);transform:rotate(-.4deg);max-height:0;opacity:0;overflow:hidden;padding-block:0;transition:all .9s}
 .paper.show{max-height:400px;opacity:1;padding-block:3rem}
+/* keynote letter */
+#letter2 .lt:nth-of-type(2){font-style:normal;font-size:inherit;color:inherit}
+#letter2 .lt:first-of-type{font-style:italic;font-size:2.1rem;color:var(--wine)}
+#letter2 h2{text-align:center;margin:1rem 0 2.2rem}
+.chips{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin-top:2rem;max-width:640px}
+.chips span{font:500 .8rem 'DM Sans',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);border-radius:30px;padding:.6rem 1.3rem;background:rgba(250,246,239,.7);opacity:0;transform:translateY(14px) scale(.9);transition:opacity .6s,transform .6s}
+.chips.in span{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.chips span{opacity:1;transform:none}}
 /* animated letter */
 .lt .w{display:inline-block;opacity:0;transform:translateY(16px);filter:blur(6px)}
 .lt.go .w{animation:wIn .8s cubic-bezier(.2,.8,.2,1) calc(var(--i)*70ms) forwards}
@@ -276,12 +284,18 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:45}
 
   <!-- 10. Finale -->
   <section class="locked after" id="sinceSec">
-    <p class="label">Since the day it began</p>
+    <p class="label">From January 2026 to today</p>
     <h2 style="margin-top:1rem">Every Second Counts</h2>
     <div class="since" id="since"></div>
     <p class="tag" id="sinceNote"></p>
   </section>
 
+
+  <section class="locked after">
+    <p class="label">A letter for you</p>
+    <div class="letter" id="letter2"></div>
+    <div class="chips" id="chips"></div>
+  </section>
 
   <section class="locked after">
     <p class="label">Open It</p>
@@ -307,12 +321,24 @@ const CONFIG = {
   name: "Logno",
   tabTitle: "MoonLight's Birthday",
   music: { src: (window.MUSIC_SRC||"music.mp3"), volume: 0.45, autoStart: true },   // your song file next to index.html ("" = built-in soft melody)
-  since: { date: "2025-09-13T00:00:00", note: "since the day our story began" },   // live counter. Set to null to hide it
+  since: {
+    date: "2026-01-01T00:00:00",
+    note: "December is Removed, But I Love You From The First to The Last ❤️",
+    skip: []   // optional: time ranges to remove, e.g. [ { from: "2026-03-01T00:00:00", to: "2026-04-01T00:00:00" } ]
+  },
+  letter2Title: "What I Want You To Know",
+  letter2: [
+    "I Know Words Alone Can't Fix Everything, So I Wrote Down a Few Things That I Really Mean.",
+    "I Was Wrong, And I Am Truly Sorry For The Hurt I Caused. You Deserved Better, And I Will Do Better.",
+    "I Will Listen More, Stay Patient, And Never Take Your Smile, Your Time or Your Love For Granted.",
+    "No Matter What, You Are The Person I Truely LOve. I Still Believe In Us, And I Still Choose You.",
+    "Always yours ❤️"
+  ],
+  keywords: ["Love", "Trust", "Patience", "Respect", "Forgiveness", "Forever"],   // live counter. Set to null to hide it
   secretDay: 22,                          // the day-of-month she must pick
   hint: "✨ Hint: Guess And Tap On The Special Day",
   finaleLine: "Here's To Another Beautiful Year of You.!!",
   letter: [
-"My Dream Girl",
     "I Hope Today Reminds You of Just How Special You Are. You Deserve Every Beautiful Thing This World Has To Offer ",
     "Thanks For Coming Into My Life — For your Smile, Your Eye,Your Hair, Your Little Habits, Your Laughter, And All The Moments That Somehow Become My Favorite Memories!",
     "I Hope This Year Brings You More Happiness, More Adventures, And Countless Reasons to Smile And Selfishly I Hope That I Will Be Able To Be With You ❤️",
@@ -487,11 +513,22 @@ addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('#modal
 addEventListener('scroll',()=>{const m=document.documentElement.scrollHeight-innerHeight;$('#prog2').style.width=(m>0?scrollY/m*100:0)+'%'},{passive:true});
 if(CONFIG.since&&CONFIG.since.date){
   $('#sinceNote').textContent=CONFIG.since.note||'';const t0=new Date(CONFIG.since.date).getTime(),box=$('#since');
+  const skips=(CONFIG.since.skip||[]).map(r=>[new Date(r.from).getTime(),new Date(r.to).getTime()]);
+  const elapsed=()=>{const now=Date.now();let ms=now-t0;skips.forEach(([x,y])=>{const a=Math.max(x,t0),b=Math.min(y,now);if(b>a)ms-=b-a});return Math.max(0,Math.floor(ms/1000))};
   box.innerHTML=['days','hours','minutes','seconds'].map(u=>`<div><b data-u="${u}">0</b><span>${u}</span></div>`).join('');
-  const tick=()=>{let s=Math.max(0,Math.floor((Date.now()-t0)/1000));const v={days:Math.floor(s/86400),hours:Math.floor(s%86400/3600),minutes:Math.floor(s%3600/60),seconds:s%60};
+  const tick=()=>{let s=elapsed();const v={days:Math.floor(s/86400),hours:Math.floor(s%86400/3600),minutes:Math.floor(s%3600/60),seconds:s%60};
     box.querySelectorAll('b').forEach(b=>b.textContent=v[b.dataset.u])};
   tick();setInterval(tick,1000)}else $('#sinceSec').remove();
 
+
+/* ---------- keynote letter + keyword chips ---------- */
+(function(){let hl=false;
+  const words=p=>p.trim().split(/\s+/).map((w,i)=>{let cls='w';if(/[❤♥]/.test(w))cls+=' hb';
+    if(w.startsWith('*')){hl=true;w=w.slice(1)}let end=false;const m=w.match(/^(.*?)\*([^*]*)$/);if(m){w=m[1]+m[2];end=true}
+    if(hl)cls+=' k';const out=`<span class="${cls}" style="--i:${i}">${w}</span>`;if(end)hl=false;return out}).join(' ');
+  $('#letter2').innerHTML='<h2>'+(CONFIG.letter2Title||'')+'</h2>'+(CONFIG.letter2||[]).map(p=>'<p class="lt">'+words(p)+'</p>').join('');
+  const box=$('#chips');(CONFIG.keywords||[]).forEach((k,i)=>{const s=document.createElement('span');s.textContent=k;s.style.transitionDelay=(i*.15)+'s';box.appendChild(s)});
+  new IntersectionObserver(([e],o)=>{if(e.isIntersecting){box.classList.add('in');o.disconnect()}},{threshold:.6}).observe(box)})();
 /* animate the letter word by word as she scrolls */
 const lo=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('go');lo.unobserve(e.target)}}),{threshold:.15,rootMargin:'0px 0px -12% 0px'});
 $$('.lt').forEach(p=>lo.observe(p));
