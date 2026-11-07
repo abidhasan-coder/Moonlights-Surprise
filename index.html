@@ -227,7 +227,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:45}
     <div class="hero-card"><div>
       <p class="label">A Small Surprise For You!!!</p>
       <h1>Happy Birthday, <span class="nm"></span></h1>
-      <p>There's a Cake Waiting For You Just Below. Tap And Light Every Candle, Close Your Eyes, And Make a Wish — The Rest of This Little Page Is Yours to Unwrap Slowly.</p>
+      <p>There's a Cake Waiting For You Just Below. Tap And Light Every Candle, Close Your Eyes, And Make a Wish — The Rest of This Little Page Is Yours to Unwrap & Scroll Down Slowly.</p>
       <p class="script">With Love</p>
     </div></div>
     <div class="scroll">Scroll Down</div>
@@ -284,7 +284,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:45}
 
   <!-- 10. Finale -->
   <section class="locked after" id="sinceSec">
-    <p class="label">From January 2026 to today</p>
+    <p class="label">From January to today</p>
     <h2 style="margin-top:1rem">Every Second Counts</h2>
     <div class="since" id="since"></div>
     <p class="tag" id="sinceNote"></p>
@@ -298,7 +298,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:45}
   </section>
 
   <section class="locked after">
-    <p class="label">Open It</p>
+    <p class="label">Tap & Open It</p>
     <p style="font-style:italic;font-size:1.9rem;color:var(--wine)">There's One More Thing</p>
     <button class="env" id="env" aria-label="Open the envelope"><span>❤</span></button>
     <div class="paper" id="paper"></div>
@@ -307,7 +307,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:45}
   <section class="locked after finale">
     <h1>Happy Birthday, <span class="nm"></span></h1>
     <p style="font-style:italic;font-size:1.7rem;color:#6b5558;margin-top:1rem" id="toast"></p>
-    <p class="script">I love You.</p>
+    <p class="script">I Love You.</p>
     <p class="count" id="count"></p>
     <button class="btn" id="again">Start The Surprise Again ↻</button>
   </section>
@@ -323,7 +323,7 @@ const CONFIG = {
   music: { src: (window.MUSIC_SRC||"music.mp3"), volume: 0.45, autoStart: true },   // your song file next to index.html ("" = built-in soft melody)
   since: {
     date: "2026-01-01T00:00:00",
-    note: "December is Removed, But I Love You From The First to The Last ❤️",
+    note: "September To December is Removed, But I Love You From The First to The Last ❤️",
     skip: []   // optional: time ranges to remove, e.g. [ { from: "2026-03-01T00:00:00", to: "2026-04-01T00:00:00" } ]
   },
   letter2Title: "What I Want You To Know",
@@ -424,9 +424,9 @@ $('#enter').onclick=()=>{ctx();if(MUSIC.autoStart!==false)musicOn();$('#gate').c
 const cal=$('#cal');
 for(let d=1;d<=31;d++){const b=document.createElement('button');b.textContent=d;
   b.onclick=()=>{
-    if(d===CONFIG.secretDay){b.classList.add('ok');cal.classList.add('done');$('#dmsg').innerHTML='You remembered.<small>Let\'s begin your surprise…</small>';
+    if(d===CONFIG.secretDay){b.classList.add('ok');cal.classList.add('done');$('#dmsg').innerHTML='You Remembered.<small>Let\'s Begin Your Surprise…</small>';
       setTimeout(()=>{$('#date').classList.add('off');$('#main').classList.add('show')},2200)}
-    else{cal.classList.remove('shake');void cal.offsetWidth;cal.classList.add('shake');$('#dmsg').textContent='Not quite… try again.'}};
+    else{cal.classList.remove('shake');void cal.offsetWidth;cal.classList.add('shake');$('#dmsg').textContent='Not Quite… Try Again.'}};
   cal.appendChild(b)}
 
 /* ---------- candles ---------- */
